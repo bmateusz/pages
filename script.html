@@ -3,6 +3,7 @@
 <button onclick="printCookies();">Cookies</button>
 <button onclick="alert('escaped');">Alert</button>
 <button onclick="doFetch()">List my private prezis</button>
+<p id="textResult"></p>
 <ul id="result"></ul>
 <script>
     function removeSandboxFromIframes() {
@@ -13,7 +14,7 @@
     }
 	function printCookies() {
 	  var x = parent.document.cookie;
-	  document.getElementById("cookies").innerHTML = x;
+	  document.getElementById("textResult").innerHTML = x;
 	}
     function doFetch() {
         const ul = document.getElementById("result");
@@ -40,7 +41,7 @@
             const titles = resp.then(data => data.map(item => ul.appendChild(document.createElement("li")).appendChild(document.createTextNode(item.title))));
         })
             .catch(error => {
-                ul.innerHTML = error;
+                document.getElementById("textResult").innerHTML = error;
             });
     }
 </script>
